@@ -3,16 +3,24 @@ package jyanken
 import (
 	"bufio"
 	"fmt"
+	"math/rand"
 	"os"
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 )
 
-func GetPlayerHand() string {
-	fmt.Printf("勝負する手を選択してください\n")
+func GetComputerHand() string {
+	rand.Seed(time.Now().UnixNano())
+	random_num := rand.Intn(4)
+	return jyankenHandMap()[random_num-1]
+}
 
-	PromptJyankenImput()
+func GetPlayerHand() string {
+	fmt.Printf("\t勝負する手を選択してください\n")
+
+	promptPlayerHand()
 
 	var player_input string
 	reader := bufio.NewReader(os.Stdin)
@@ -20,28 +28,28 @@ func GetPlayerHand() string {
 	player_input = strings.TrimSuffix(player_input, "\n")
 
 	for IsValid(player_input) == false {
-		PromptJyankenImput()
+		promptPlayerHand()
 		player_input, _ = reader.ReadString('\n')
 		player_input = strings.TrimSuffix(player_input, "\n")
 	}
 
 	player_choice, _ := strconv.Atoi(player_input)
-	return JyankenHandMap()[player_choice-1]
+	return jyankenHandMap()[player_choice-1]
 }
 
-func jyanken_hand_names() [3]string {
+func jyankenHandNames() [3]string {
 	return [3]string{"グー", "チョキ", "パー"}
 }
 
-func JyankenHandMap() map[int]string {
+func jyankenHandMap() map[int]string {
 	m := make(map[int]string)
-	for i, hand_name := range jyanken_hand_names() {
+	for i, hand_name := range jyankenHandNames() {
 		m[i] = hand_name
 	}
 	return m
 }
 
-func get_sorted_keys(m map[int]string) []int {
+func getStoredKeys(m map[int]string) []int {
 	keys := []int{}
 	for k := range m {
 		keys = append(keys, k)
@@ -50,12 +58,12 @@ func get_sorted_keys(m map[int]string) []int {
 	return keys
 }
 
-func PromptJyankenImput() {
+func promptPlayerHand() {
 	var prmpt string
-	m := JyankenHandMap()
-	for id := range get_sorted_keys(m) {
+	m := jyankenHandMap()
+	for id := range getStoredKeys(m) {
 		item := m[id]
-		prmpt += fmt.Sprintf("%s\t%d を入力\n", item, id+1)
+		prmpt += fmt.Sprintf("\t%s\t%d を入力\n", item, id+1)
 	}
 	fmt.Print(prmpt)
 }
