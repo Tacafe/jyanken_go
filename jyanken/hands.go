@@ -13,8 +13,8 @@ import (
 
 func GetComputerHand() string {
 	rand.Seed(time.Now().UnixNano())
-	random_num := rand.Intn(4)
-	return jyankenHandMap()[random_num-1]
+	random_num := rand.Intn(3)
+	return jyankenHandMap()[random_num]
 }
 
 func GetPlayerHand() string {
